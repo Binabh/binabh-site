@@ -1,8 +1,12 @@
 import Link from "next/link";
-import React from "react";
-const path = window.location.href;
+import { useEffect, useState } from "react";
 
 function Blog() {
+  const [path, setPath] = useState("");
+  useEffect(() => {
+    setPath(window.location.href);
+  }, []);
+
   return (
     <main className="p-2 md:p-8 flex flex-col gap-4">
       <div className="flex gap-4 flex-wrap">
