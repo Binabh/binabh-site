@@ -1,7 +1,27 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { BASEURL } from "../../constants";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
+import styles from "../../styles/Blog.module.css";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { materialDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
-function Blog() {
+export const getServerSideProps = async (context) => {
+  const slug = context.params.slug;
+  const blog = await fetch(
+    `${BASEURL}/blogs?filters[slug][$eq]=${slug}&populate=deep`
+  );
+  const blogData = await blog.json();
+  return {
+    props: {
+      blog: blogData?.data[0],
+    },
+  };
+};
+function Blog({ blog }) {
+  console.log(blog);
   const [path, setPath] = useState("");
   useEffect(() => {
     setPath(window.location.href);
@@ -90,69 +110,120 @@ function Blog() {
       </div>
       <div className=" bg-github-black border border-white px-4 md:px-16 py-4 rounded-md flex flex-col gap-4">
         <div>
-          <h3 className="text-xl font-extrabold">
-            Deploy Next js app into your own vps using build from github
-            actions.
-          </h3>
+          <h3 className="text-3xl font-extrabold">{blog.attributes.Title}</h3>
           <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
         </div>
         <hr className="text-green" />
-        <p>
-          Contrary to popular belief, Lorem Ipsum is not simply random text. It
-          has roots in a piece of classical Latin literature from 45 BC, making
-          it over 2000 years old. Richard McClintock, a Latin professor at
-          Hampden-Sydney College in Virginia, looked up one of the more obscure
-          Latin words, consectetur, from a Lorem Ipsum passage, and going
-          through the cites of the word in classical literature, discovered the
-          undoubtable source. Lorem Ipsum comes from sections 1.10.32 and
-          1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and
-          Evil) by Cicero, written in 45 BC. This book is a treatise on the
-          theory of ethics, very popular during the Renaissance. The first line
-          of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in
-          section 1.10.32. The standard chunk of Lorem Ipsum used since the
-          1500s is reproduced below for those interested. Sections 1.10.32 and
-          1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also
-          reproduced in their exact original form, accompanied by English
-          versions from the 1914 translation by H. Rackham.
-        </p>
-        <p>
-          There are many variations of passages of Lorem Ipsum available, but
-          the majority have suffered alteration in some form, by injected
-          humour, or randomised words which don't look even slightly believable.
-          If you are going to use a passage of Lorem Ipsum, you need to be sure
-          there isn't anything embarrassing hidden in the middle of text. All
-          the Lorem Ipsum generators on the Internet tend to repeat predefined
-          chunks as necessary, making this the first true generator on the
-          Internet. It uses a dictionary of over 200 Latin words, combined with
-          a handful of model sentence structures, to generate Lorem Ipsum which
-          looks reasonable. The generated Lorem Ipsum is therefore always free
-          from repetition, injected humour, or non-characteristic words etc.
-        </p>
-        <p>
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout. The point of
-          using Lorem Ipsum is that it has a more-or-less normal distribution of
-          letters, as opposed to using 'Content here, content here', making it
-          look like readable English. Many desktop publishing packages and web
-          page editors now use Lorem Ipsum as their default model text, and a
-          search for 'lorem ipsum' will uncover many web sites still in their
-          infancy. Various versions have evolved over the years, sometimes by
-          accident, sometimes on purpose (injected humour and the like).
-        </p>
+        <ReactMarkdown
+          className={`${styles["blog-body"]} flex flex-col gap-2`}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeSlug]}
+          components={{
+            h2: ({ id, children }) => {
+              if (id) {
+                return (
+                  <div className="flex gap-2 -ml-6 items-center">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${path}#${id}`);
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-4 h-4"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                        />
+                      </svg>
+                    </button>
+                    <h2 className="font-bold text-2xl text-green" id={id}>
+                      {children}
+                    </h2>
+                  </div>
+                );
+              }
+              return <h2 id={id}>{children}</h2>;
+            },
+            h3: ({ id, children }) => {
+              return (
+                <h3 className="text-xl text-orange font-bold" id={id}>
+                  {children}
+                </h3>
+              );
+            },
+            a: ({ id, children, href }) => {
+              return (
+                <Link href={href} className="font-bold underline" id={id}>
+                  {children}
+                </Link>
+              );
+            },
+            code: ({ children, className, inline }) => {
+              const match = /language-(\w+)/.exec(className || "");
+              if (!inline && match) {
+                return (
+                  <div className="relative">
+                    <SyntaxHighlighter
+                      className="rounded-md relative"
+                      style={materialDark}
+                      language={match[1]}
+                      PreTag="div"
+                    >
+                      {String(children).replace(/\n$/, "")}
+                    </SyntaxHighlighter>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(children);
+                      }}
+                      className="p-2 absolute top-0 right-0"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              }
+              return (
+                <code className="p-1 bg-black rounded-md">{children}</code>
+              );
+            },
+          }}
+        >
+          {blog.attributes.body}
+        </ReactMarkdown>
         <hr className="text-green" />
         <p className="font-bold">Share this on</p>
 
         <div className="flex flex-wrap gap-4">
           <Link
             target="_blank"
-            href={`https://www.linkedin.com/shareArticle?url=${path}&title=${"title"}`}
+            href={`https://www.linkedin.com/shareArticle?url=${path}&title=${blog.attributes.Title}`}
             className="p-2 bg-linkedin-blue/50 border-linkedin-blue border rounded-md font-bold"
           >
             LinkedIn
           </Link>
           <Link
             target="_blank"
-            href={`https://twitter.com/share?url=${path}&text=${"title"}`}
+            href={`https://twitter.com/share?url=${path}&text=${blog.attributes.Title}`}
             className="p-2 bg-twitter-blue/50 border-twitter-blue border rounded-md font-bold"
           >
             Twitter
@@ -166,14 +237,16 @@ function Blog() {
           </Link>
           <Link
             target="_blank"
-            href={`https://wa.me/?text=${"title"} ${path}`}
+            href={`https://wa.me/?text=${blog.attributes.Title} ${path}`}
             className="p-2 bg-whatsapp-green/50 border-whatsapp-green border rounded-md font-bold"
           >
             Whatsapp
           </Link>
           <Link
             target="_blank"
-            href={`https://pinterest.com/pin/create/bookmarklet/?media=${"image"}&url=${path}&description=${"title"}`}
+            href={`https://pinterest.com/pin/create/bookmarklet/?media=${"image"}&url=${path}&description=${
+              blog.attributes.Title
+            }`}
             className="p-2 bg-pinterest-red/50 border-pinterest-red border rounded-md font-bold"
           >
             Pinterest

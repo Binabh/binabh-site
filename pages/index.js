@@ -1,7 +1,19 @@
 import Head from "next/head";
 import Link from "next/link";
+import { BASEURL } from "../constants";
 
-export default function Home() {
+export const getServerSideProps = async () => {
+  const blog = await fetch(
+    `${BASEURL}/blogs?pagination[page]=1&pagination[pageSize]=3&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt`
+  );
+  const blogData = await blog.json();
+  return {
+    props: {
+      blogs: blogData?.data,
+    },
+  };
+};
+export default function Home({ blogs }) {
   return (
     <>
       <Head>
@@ -130,16 +142,18 @@ export default function Home() {
                   View all 🧐
                 </Link>
               </div>
-              {/* <Link
-                href="/blogs/a"
-                className="bg-github-black/50 p-4 border border-white rounded-md flex flex-col gap-2"
-              >
-                <h3 className="text-xl font-extrabold">
-                  Deploy Next js app into your own vps using build from github
-                  actions.
-                </h3>
-                <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
-              </Link> */}
+              {blogs?.map((b) => (
+                <Link
+                  key={b.id}
+                  href={`/blogs/${b.attributes.slug}`}
+                  className="bg-github-black/50 p-4 border border-white rounded-md flex flex-col gap-2"
+                >
+                  <h3 className="text-xl font-extrabold">
+                    {b.attributes.Title}
+                  </h3>
+                  <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

@@ -1,1 +1,1 @@
-BASE_URL = "https://binabh.com.np/api/";
+export const BASEURL = "https://binabh.com.np/backend/api";

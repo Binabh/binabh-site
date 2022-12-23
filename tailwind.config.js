@@ -12,6 +12,7 @@ module.exports = {
       red: "#ff3c5c",
       orange: "#f97515",
       white: "#e4e2ff",
+      black: "#000",
       "github-black": "#171515",
       "youtube-red": "#ff0000",
       "twitter-blue": "#1da1f2",
