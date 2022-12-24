@@ -4,7 +4,6 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { BASEURL } from "../../constants";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
-import styles from "../../styles/Blog.module.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
@@ -108,14 +107,14 @@ function Blog({ blog }) {
           <span>Copy Link</span>
         </button>
       </div>
-      <div className=" bg-github-black border border-white px-4 md:px-16 py-4 rounded-md flex flex-col gap-4">
+      <article className=" bg-github-black border border-white px-4 md:px-16 py-4 rounded-md flex flex-col gap-4">
         <div>
           <h3 className="text-3xl font-extrabold">{blog.attributes.Title}</h3>
           <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
         </div>
         <hr className="text-green" />
         <ReactMarkdown
-          className={`${styles["blog-body"]} flex flex-col gap-2`}
+          className={`flex flex-col gap-2`}
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeSlug]}
           components={{
@@ -206,6 +205,28 @@ function Blog({ blog }) {
                 <code className="p-1 bg-black rounded-md">{children}</code>
               );
             },
+            blockquote: ({ children }) => {
+              return (
+                <blockquote class="italic font-semibold border-l-4 border-white/50 pl-4 text-white">
+                  <svg
+                    aria-hidden="true"
+                    class="w-5 h-5 text-red"
+                    viewBox="0 0 24 27"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M14.017 18L14.017 10.609C14.017 4.905 17.748 1.039 23 0L23.995 2.151C21.563 3.068 20 5.789 20 8H24V18H14.017ZM0 18V10.609C0 4.905 3.748 1.038 9 0L9.996 2.151C7.563 3.068 6 5.789 6 8H9.983L9.983 18L0 18Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  {children}
+                </blockquote>
+              );
+            },
+            ol: ({ children }) => {
+              return <ol className="list-decimal list-inside">{children}</ol>;
+            },
           }}
         >
           {blog.attributes.body}
@@ -252,7 +273,7 @@ function Blog({ blog }) {
             Pinterest
           </Link>
         </div>
-      </div>
+      </article>
       <h2 className="text-xl font-bold">
         <span className="text-red">Related</span> Blogs
         <span className="text-orange">;</span>
