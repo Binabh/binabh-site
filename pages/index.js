@@ -151,7 +151,7 @@ export default function Home({ blogs }) {
                   <h3 className="text-xl font-extrabold">
                     {b.attributes.Title}
                   </h3>
-                  <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
+                  <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
                 </Link>
               ))}
             </div>

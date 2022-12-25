@@ -58,7 +58,7 @@ function Index({ blogs }) {
               className="bg-github-black/50 p-4 border border-white rounded-md flex flex-col gap-2"
             >
               <h3 className="text-xl font-extrabold">{b.attributes.Title}</h3>
-              <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
+              <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
             </Link>
           ))}
         </div>

@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import SEOHead from "../components/SEOHead";
+import SEOHead from "../../components/SEOHead";
 
 export const getServerSideProps = async (context) => {
   const slug = context.params.slug;
@@ -113,7 +113,7 @@ function Blog({ blog }) {
         <article className=" bg-github-black border border-white px-4 md:px-16 py-4 rounded-md flex flex-col gap-4">
           <div>
             <h3 className="text-3xl font-extrabold">{blog.attributes.Title}</h3>
-            <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
+            <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
           </div>
           <hr className="text-green" />
           <ReactMarkdown
@@ -290,7 +290,7 @@ function Blog({ blog }) {
             Deploy Next js app into your own vps using build from github
             actions.
           </h3>
-          <p className="font-light">⌛ 2 hours ago | 📖 3 min read</p>
+          <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
         </Link> */}
         </div>
       </main>
