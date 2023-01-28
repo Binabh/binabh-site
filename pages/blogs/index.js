@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
+import BlogCard from "../../components/BlogCard";
 import { BASEURL } from "../../constants";
 export const getServerSideProps = async () => {
   const blog = await fetch(
@@ -25,7 +26,7 @@ function Index({ blogs }) {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main className="p-2 md:p-8">
+      <main className="p-2 md:p-8 container mx-auto">
         <div className="flex gap-4 flex-wrap">
           <div className="bg-github-black/50 border border-white p-2 rounded-md flex text-lg gap-2 font-bold">
             <Link href="/">🏠Home</Link>
@@ -52,14 +53,7 @@ function Index({ blogs }) {
         </div>
         <div className="flex flex-col mt-4 gap-4">
           {blogs?.map((b) => (
-            <Link
-              key={b.id}
-              href={`/blogs/${b.attributes.slug}`}
-              className="bg-github-black/50 p-4 border border-white rounded-md flex flex-col gap-2"
-            >
-              <h3 className="text-xl font-extrabold">{b.attributes.Title}</h3>
-              <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
-            </Link>
+            <BlogCard key={b.id} data={b} />
           ))}
         </div>
       </main>

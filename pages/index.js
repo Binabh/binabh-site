@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import BlogCard from "../components/BlogCard";
 import { BASEURL } from "../constants";
 
 export const getServerSideProps = async () => {
@@ -25,7 +26,7 @@ export default function Home({ blogs }) {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main className="p-2 md:p-8">
+      <main className="p-4 container mx-auto">
         <h2 className="text-4xl text-green">
           <span className="text-white">&gt;&gt; </span>
           Hello Visito<span className="vim-caret">r</span>
@@ -143,16 +144,7 @@ export default function Home({ blogs }) {
                 </Link>
               </div>
               {blogs?.map((b) => (
-                <Link
-                  key={b.id}
-                  href={`/blogs/${b.attributes.slug}`}
-                  className="bg-github-black/50 p-4 border border-white rounded-md flex flex-col gap-2"
-                >
-                  <h3 className="text-xl font-extrabold">
-                    {b.attributes.Title}
-                  </h3>
-                  <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
-                </Link>
+                <BlogCard key={b.id} data={b} />
               ))}
             </div>
           </div>

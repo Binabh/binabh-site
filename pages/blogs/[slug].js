@@ -7,6 +7,9 @@ import rehypeSlug from "rehype-slug";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import SEOHead from "../../components/SEOHead";
+import moment from "moment";
+import { data } from "autoprefixer";
+import BlogCard from "../../components/BlogCard";
 
 export const getServerSideProps = async (context) => {
   const slug = context.params.slug;
@@ -30,7 +33,7 @@ function Blog({ blog }) {
   return (
     <>
       <SEOHead seo={blog.attributes.seo} />
-      <main className="p-2 md:p-8 flex flex-col gap-4">
+      <main className="p-2 md:p-8 flex flex-col gap-4 container mx-auto">
         <div className="flex gap-4 flex-wrap">
           <header className="bg-github-black/50 border border-white p-2 rounded-md flex text-lg gap-2 font-bold">
             <Link href="/">🏠Home</Link>
@@ -113,7 +116,10 @@ function Blog({ blog }) {
         <article className=" bg-github-black border border-white px-4 md:px-16 py-4 rounded-md flex flex-col gap-4">
           <div>
             <h3 className="text-3xl font-extrabold">{blog.attributes.Title}</h3>
-            <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
+            <p className="font-light">
+              ⌛ {moment(blog.attributes.updatedAt).fromNow()} | 📖{" "}
+              {Math.floor(blog.length / 900)} min read
+            </p>
           </div>
           <hr className="text-green" />
           <ReactMarkdown
@@ -210,10 +216,10 @@ function Blog({ blog }) {
               },
               blockquote: ({ children }) => {
                 return (
-                  <blockquote class="italic font-semibold border-l-4 border-white/50 pl-4 text-white">
+                  <blockquote className="italic font-semibold border-l-4 border-white/50 pl-4 text-white">
                     <svg
                       aria-hidden="true"
-                      class="w-5 h-5 text-red"
+                      className="w-5 h-5 text-red"
                       viewBox="0 0 24 27"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -282,16 +288,9 @@ function Blog({ blog }) {
           <span className="text-orange">;</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* <Link
-          href="/blogs/a"
-          className="bg-github-black/50 p-4 border border-white rounded-md flex flex-col gap-2"
-        >
-          <h3 className="text-xl font-extrabold">
-            Deploy Next js app into your own vps using build from github
-            actions.
-          </h3>
-          <p className="font-light">⌛ 2 hours ago | 📖 7 min read</p>
-        </Link> */}
+          {blog.attributes.relatedBlogs.data.map((b) => (
+            <BlogCard data={b} />
+          ))}
         </div>
       </main>
     </>
