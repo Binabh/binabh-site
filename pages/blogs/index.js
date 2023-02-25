@@ -1,8 +1,10 @@
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import BlogCard from "../../components/BlogCard";
 import { BASEURL } from "../../constants";
+
 export const getServerSideProps = async () => {
   const blog = await fetch(
     `${BASEURL}/blogs?pagination[page]=1&pagination[pageSize]=8&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt`
@@ -14,7 +16,25 @@ export const getServerSideProps = async () => {
     },
   };
 };
+
 function Index({ blogs }) {
+  const [searchedBlogs, setSearchedBlogs] = useState(blogs);
+  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    const getData = setTimeout(() => {
+      if (searchQuery.length > 0)
+        fetch(
+          `${BASEURL}/blogs?pagination[page]=1&pagination[pageSize]=3&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt&filters[$or][0][Title][$contains]=${searchQuery}&filters[$or][1][slug][$contains]=${searchQuery}&filters[$or][2][seo][keywords][$contains]=${searchQuery}&filters[$or][3][seo][metaDescription][$contains]=${searchQuery}&filters[$or][4][seo][metaTitle][$contains]=${searchQuery}`
+        ).then(async (res) => {
+          const data = await res.json();
+          setSearchedBlogs(data.data);
+        });
+      else setSearchedBlogs(blogs);
+    }, 500);
+
+    return () => clearTimeout(getData);
+  }, [blogs, searchQuery]);
+
   return (
     <>
       <Head>
@@ -47,14 +67,23 @@ function Index({ blogs }) {
             <div>📚Blogs</div>
           </div>
           <input
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+            }}
             className="rounded-md bg-github-black/50 border border-white text-lg p-2"
             placeholder="Search blogs 🔍"
           />
         </div>
         <div className="flex flex-col mt-4 gap-4">
-          {blogs?.map((b) => (
+          {searchedBlogs?.map((b) => (
             <BlogCard key={b.id} data={b} />
           ))}
+          {searchedBlogs?.length === 0 && (
+            <p className="text-center text-lg font-bold">
+              OOPS! No blogs found on this topic 😔. Please try searching with
+              different key.
+            </p>
+          )}
         </div>
       </main>
     </>
