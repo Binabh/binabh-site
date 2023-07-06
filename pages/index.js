@@ -96,6 +96,13 @@ export default function Home({ blogs }) {
                 >
                   Twitter
                 </Link>
+                <Link
+                  href="https://threads.net/@binabhDevkota"
+                  target="_blank"
+                  className="p-2 bg-github-black/50 border-github-black border rounded-md font-bold"
+                >
+                  Threads
+                </Link>
               </div>
             </div>
             <div>
