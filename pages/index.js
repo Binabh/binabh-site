@@ -6,7 +6,7 @@ import { BASEURL } from "../constants";
 
 export const getServerSideProps = async () => {
   const blog = await fetch(
-    `${BASEURL}/blogs?pagination[page]=1&pagination[pageSize]=3&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt`
+    `${BASEURL}/blogs?sort[0]=updatedAt:desc&pagination[page]=1&pagination[pageSize]=3&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt`
   );
   const blogData = await blog.json();
   return {
@@ -23,7 +23,7 @@ export default function Home({ blogs }) {
     const getData = setTimeout(() => {
       if (searchQuery.length > 0)
         fetch(
-          `${BASEURL}/blogs?pagination[page]=1&pagination[pageSize]=3&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt&filters[$or][0][Title][$contains]=${searchQuery}&filters[$or][1][slug][$contains]=${searchQuery}&filters[$or][2][seo][keywords][$contains]=${searchQuery}&filters[$or][3][seo][metaDescription][$contains]=${searchQuery}&filters[$or][4][seo][metaTitle][$contains]=${searchQuery}`
+          `${BASEURL}/blogs?sort[0]=updatedAt:desc&pagination[page]=1&pagination[pageSize]=3&fields[0]=Title&fields[1]=slug&fields[2]=updatedAt&filters[$or][0][Title][$contains]=${searchQuery}&filters[$or][1][slug][$contains]=${searchQuery}&filters[$or][2][seo][keywords][$contains]=${searchQuery}&filters[$or][3][seo][metaDescription][$contains]=${searchQuery}&filters[$or][4][seo][metaTitle][$contains]=${searchQuery}`
         ).then(async (res) => {
           const data = await res.json();
           setSearchedBlogs(data.data);
