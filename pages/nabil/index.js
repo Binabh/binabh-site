@@ -13,7 +13,8 @@ function Bank() {
           name="description"
           content="Send money to Binabh's bank account."
         />
-        <meta name="image" content="/nabil_qr.jpg" />
+        <meta name="image" content="https://binabh.com.np/nabil_qr.jpg" />
+        <meta name="og:image" content="https://binabh.com.np/nabil_qr.jpg" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <section className="container mx-auto py-8 h-screen flex justify-center items-center">
