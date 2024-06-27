@@ -60,7 +60,7 @@ export default function Home({ blogs }) {
               <div className="text-xl pl-4">
                 <p>🕸️🕷️ Web developer</p>
                 <p>📱 Mobile app developer</p>
-                <p>👷‍♂️ Engineer</p>
+                <p>👷 Engineer</p>
                 <p>📊 Data Science Student</p>
                 <p>🐧 Opensource Enthusiast</p>
               </div>
