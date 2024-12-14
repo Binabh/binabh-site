@@ -58,6 +58,10 @@ export default function Home({ blogs }) {
                 <span className="text-orange">;</span>
               </p>
               <div className="text-xl pl-4">
+                <p>
+                  👩‍❤️‍👨 Husband of{" "}
+                  <a href="http://shikshakhadka.com.np">Shiksha Khadka</a>
+                </p>
                 <p>🕸️🕷️ Web developer</p>
                 <p>📱 Mobile app developer</p>
                 <p>👷 Engineer</p>
